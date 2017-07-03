@@ -1,9 +1,8 @@
 from __future__ import print_function
 import argparse
 import random
-import torch
-import torch.nn as nn
-import torch.nn.parallel
+import os
+
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
@@ -11,7 +10,6 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
-import os
 
 import models.dcgan as dcgan
 import models.mlp as mlp
@@ -84,6 +82,15 @@ elif opt.dataset == 'cifar10':
                                transforms.ToTensor(),
                                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
                            ])
+    )
+elif opt.dataset == 'mnist':
+    dataset = dset.MNIST(root=opt.dataroot, download=True,
+                         transform=transforms.Compose([
+                           transforms.Scale(opt.imageSize),
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.5, 0.5, 0.5),
+                                                (0.5, 0.5, 0.5)),
+                         ])
     )
 assert dataset
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=opt.batchSize,
